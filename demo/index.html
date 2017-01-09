@@ -1,0 +1,56 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>cordova-geolocation Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="../cordova-geolocation.html">
+    <link rel="import" href="../../google-map/google-map.html">
+    <link rel="import" href="../../google-map/google-map-marker.html" />
+
+    <style>
+    google-map {
+      height: 600px;
+      width: 100%;
+    }
+    </style>
+
+  </head>
+  <body unresolved>
+
+
+    <cordova-geolocation id="cordovaGeolocation">
+      <template id="cordova-geolocation-map" is="dom-bind" items ="{{position}}">
+         <google-map zoom="12" latitude="{{items.coords.latitude}}" longitude="{{items.coords.longitude}}" api-key="AIzaSyCURpUDdbnlLDF2OgKAADBmxJ1AYafL6Vo">
+          <google-map-marker latitude="{{items.coords.latitude}}" longitude="{{items.coords.longitude}}" draggable="true">
+          </google-map-marker>
+        </google-map>
+      </template>
+    </cordova-geolocation>
+
+
+    <script>
+      var seedElement = document.getElementById('cordova-geolocation');
+      document.addEventListener("cordova-geolocation-lasers", function(e) {
+        console.log(e.detail.sound);
+      });
+
+      document.getElementById('cordovaGeolocation').addEventListener('setCurrentPosition', function() {
+        document.getElementById('cordova-geolocation-map').items = document.getElementById('cordovaGeolocation').position;
+      })
+
+
+    </script>
+
+  </body>
+</html>

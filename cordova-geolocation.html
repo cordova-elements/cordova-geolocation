@@ -29,14 +29,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
          * Describes the longitude of current position .
          */
          latitude: {
-           type: 'string',
+           type: Number,
+           value: '',
+           notify: true,
+           reflectToAttribute: true
          },
 
         /**
          * Describes the latitude of current position .
          */
          longitude: {
-           type: 'string',
+           type: Number,
+           value: '',
+           notify: true,
+           reflectToAttribute: true
          },
          /**
           * Describes the current location of map .
@@ -45,8 +51,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         position: {
           type: Object,
+          observer: '_currentlocation',
         },
       },
+      _currentlocation: function(){
+
+        this.fire('setCurrentPosition','');
+        var position = this.position;
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
+
+
+      },
+
+
 
 
       // Element Lifecycle
@@ -54,11 +72,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ready: function() {
       navigator.geolocation.getCurrentPosition(function(data) {
      this.position = data;
-     this.latitude = data.coords.latitude;
-     this.longitude = data.coords.longitude;
-    }.bind(this));
+      }.bind(this));
 
       },
+
+
 
       attached: function() {
         // `attached` fires once the element and its parents have been inserted
