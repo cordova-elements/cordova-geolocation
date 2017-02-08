@@ -55,25 +55,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
       },
       _currentlocation: function(){
-
         this.fire('setCurrentPosition','');
         var position = this.position;
         this.latitude = position.coords.latitude;
         this.longitude = position.coords.longitude;
-
-
       },
-
-
-
-
       // Element Lifecycle
 
       ready: function() {
-      navigator.geolocation.getCurrentPosition(function(data) {
-     this.position = data;
-      }.bind(this));
-
+        navigator.geolocation.getCurrentPosition(function(data) {
+          var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
+          geocoder = new google.maps.Geocoder();
+          geocoder.geocode({'latLng': myLatlng}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+              for (var location = 0; location < results[0].address_components.length; location++)
+              {
+                  var component = results[0].address_components[location];
+                  switch(component.types[0])
+                  {
+                      case 'locality':
+                          data.coords.city = component.long_name;
+                          break;
+                      case 'administrative_area_level_1':
+                          data.coords.state = component.long_name;
+                          break;
+                      case 'country':
+                          data.coords.country = component.long_name;
+                          break;
+                  }
+              };
+            }
+          }); //end geocoder
+          this.position = data;
+        }.bind(this));
       },
 
 
