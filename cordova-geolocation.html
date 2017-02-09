@@ -68,6 +68,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           geocoder = new google.maps.Geocoder();
           geocoder.geocode({'latLng': myLatlng}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
+              data.coords.address = results[0].formatted_address;
+              data.coords.locationAddresses = results;
               for (var location = 0; location < results[0].address_components.length; location++)
               {
                   var component = results[0].address_components[location];
