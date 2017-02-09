@@ -1,0 +1,110 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<!--
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="cordova-geolocation">
+  <template>
+      <content></content>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'cordova-geolocation',
+
+      properties: {
+        /**
+         * Describes the longitude of current position .
+         */
+         latitude: {
+           type: Number,
+           value: '',
+           notify: true,
+           reflectToAttribute: true
+         },
+
+        /**
+         * Describes the latitude of current position .
+         */
+         longitude: {
+           type: Number,
+           value: '',
+           notify: true,
+           reflectToAttribute: true
+         },
+         /**
+          * Describes the current address of map .
+          */
+          address: {
+            type: 'string',
+            value: '',
+            notify: true,
+            reflectToAttribute: true
+          },
+        /**
+         * Describes the current location of map .
+         */
+        position: {
+          type: Object,
+          observer: '_currentlocation',
+        },
+      },
+      _currentlocation: function(){
+        debugger;
+        this.fire('setCurrentPosition','');
+        var position = this.position;
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
+        this.address = position.coords.address;
+      },
+      // Element Lifecycle
+      ready: function() {
+        var self = this;
+        navigator.geolocation.getCurrentPosition(function(data) {
+          var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
+          geocoder = new google.maps.Geocoder();
+          geocoder.geocode({'latLng': myLatlng}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+              data.coords.address = results[0].formatted_address;
+              data.coords.locationAddresses = results;
+              for (var location = 0; location < results[0].address_components.length; location++)
+              {
+                  var component = results[0].address_components[location];
+                  switch(component.types[0])
+                  {
+                      case 'locality':
+                          data.coords.city = component.long_name;
+                          break;
+                      case 'political':
+                          data.coords.area = component.long_name;
+                          break;
+                      case 'administrative_area_level_1':
+                          data.coords.state = component.long_name;
+                          break;
+                      case 'country':
+                          data.coords.country = component.long_name;
+                          break;
+                      case 'postal_code':
+                          data.coords.pincode = component.long_name;
+                          break;
+                  }
+              };
+            }
+            self.position = data;
+          }); //end geocoder
+        }.bind(this));
+      }
+    });
+  </script>
+</dom-module>
