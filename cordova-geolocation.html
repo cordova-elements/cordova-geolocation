@@ -16,7 +16,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="cordova-geolocation">
   <template>
-
       <content></content>
   </template>
 
@@ -45,10 +44,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
            reflectToAttribute: true
          },
          /**
-          * Describes the current location of map .
+          * Describes the current address of map .
           */
-
-
+          address: {
+            type: 'string',
+            value: '',
+            notify: true,
+            reflectToAttribute: true
+          },
+        /**
+         * Describes the current location of map .
+         */
         position: {
           type: Object,
           observer: '_currentlocation',
@@ -62,10 +68,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.address = position.coords.address;
       },
       // Element Lifecycle
-
       ready: function() {
         navigator.geolocation.getCurrentPosition(function(data) {
-          console.log("data: ", data);
           var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
           geocoder = new google.maps.Geocoder();
           geocoder.geocode({'latLng': myLatlng}, function(results, status) {
@@ -98,54 +102,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }); //end geocoder
           this.position = data;
         }.bind(this));
-      },
-
-
-
-      attached: function() {
-        // `attached` fires once the element and its parents have been inserted
-        // into a document.
-        //
-        // This is a good place to perform any work related to your element's
-        // visual state or active behavior (measuring sizes, beginning animations,
-        // loading resources, etc).
-      },
-
-      detached: function() {
-        // The analog to `attached`, `detached` fires when the element has been
-        // removed from a document.
-        //
-        // Use this to clean up anything you did in `attached`.
-      },
-
-      // Element Behavior
-
-      /**
-       * Sometimes it's just nice to say hi.
-       *
-       * @param {string} greeting A positive greeting.
-       * @return {string} The full greeting.
-       */
-      sayHello: function(greeting) {
-        var response = greeting || 'Hello World!';
-        return 'cordova-geolocation says, ' + response;
-      },
-
-      /**
-       * The `cordova-geolocation-lasers` event is fired whenever `fireLasers` is called.
-       *
-       * @event cordova-geolocation-lasers
-       * @detail {{sound: String}}
-       */
-
-      /**
-       * Attempt to destroy this element's enemies with a beam of light!
-       *
-       * Or, at least, dispatch an event in the vain hope that someone else will
-       * do the zapping.
-       */
-      fireLasers: function() {
-        this.fire('cordova-geolocation-lasers', {sound: 'Pew pew!'});
       }
     });
   </script>
