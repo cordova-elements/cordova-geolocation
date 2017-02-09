@@ -59,11 +59,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var position = this.position;
         this.latitude = position.coords.latitude;
         this.longitude = position.coords.longitude;
+        this.address = position.coords.address;
       },
       // Element Lifecycle
 
       ready: function() {
         navigator.geolocation.getCurrentPosition(function(data) {
+          console.log("data: ", data);
           var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
           geocoder = new google.maps.Geocoder();
           geocoder.geocode({'latLng': myLatlng}, function(results, status) {
@@ -78,11 +80,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       case 'locality':
                           data.coords.city = component.long_name;
                           break;
+                      case 'political':
+                          data.coords.area = component.long_name;
+                          break;
                       case 'administrative_area_level_1':
                           data.coords.state = component.long_name;
                           break;
                       case 'country':
                           data.coords.country = component.long_name;
+                          break;
+                      case 'postal_code':
+                          data.coords.pincode = component.long_name;
                           break;
                   }
               };
