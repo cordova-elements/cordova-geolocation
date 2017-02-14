@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <!--
 @license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
@@ -8,7 +9,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer.html"/>
 <!--
 @demo demo/index.html
 @hero hero.svg
@@ -61,7 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
       },
       _currentlocation: function(){
-        debugger;
+
         this.fire('setCurrentPosition','');
         var position = this.position;
         this.latitude = position.coords.latitude;
@@ -71,10 +72,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // Element Lifecycle
       ready: function() {
         var self = this;
+
+        var geocoder = new google.maps.Geocoder();
         navigator.geolocation.getCurrentPosition(function(data) {
           var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
-          geocoder = new google.maps.Geocoder();
-          geocoder.geocode({'latLng': myLatlng}, function(results, status) {
+            geocoder.geocode({'latLng': myLatlng}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
               data.coords.address = results[0].formatted_address;
               data.coords.locationAddresses = results;
@@ -99,7 +101,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           data.coords.pincode = component.long_name;
                           break;
                   }
-              };
+              }
             }
             self.position = data;
           }); //end geocoder
