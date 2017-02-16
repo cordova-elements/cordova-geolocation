@@ -10,7 +10,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <!--
-  `<cordova-geolocation>` used to shows the markers in current position. 
+  `<cordova-geolocation>` is used to shows the markers in current position. To set the values of `latitude` and `longitude` we write
+  javascript code. Instead of writing a javascript code we can use this element.
+
+  Example:
+    <cordova-geolocation id="cordovaGeolocation">
+    </cordova-geolocation>
+
+  Example:
+
+  To set the position value in template
+
+  <script>
+    document.getElementById('cordovaGeolocation').addEventListener('setCurrentPosition', function() {
+      document.getElementById('cordova-geolocation-map').items = document.getElementById('cordovaGeolocation').position;
+    })
+  </script>
 @demo demo/index.html
 @hero hero.svg
 -->
@@ -25,7 +40,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     is: 'cordova-geolocation',
     properties: {
       /**
-       *  latitude of current location
+       *  Latitude of current location.
        */
       latitude: {
         type: Number,
@@ -34,7 +49,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         reflectToAttribute: true
       },
       /**
-       * Longitude of current location
+       * Longitude of current location.
        */
       longitude: {
         type: Number,
@@ -43,7 +58,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         reflectToAttribute: true
       },
       /**
-       * Shows the address according to latitude and longitude
+       * Shows the address in detail like BLock No , Street Address, Area, Pincode.
        */
       address: {
         type: 'string',
@@ -52,7 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         reflectToAttribute: true
       },
       /**
-       * Positon show the current location
+       * Positon is used to set the values of latitude and longitude.
        */
       position: {
         type: Object,
@@ -60,7 +75,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
     },
 
-    // This observer fires when user changed their position
+    // This observer fires when user change their position
     _currentlocation: function(){
       this.fire('setCurrentPosition','');
       var position = this.position;
@@ -68,7 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this.longitude = position.coords.longitude;
       this.address = position.coords.address;
     },
-    // Element Lifecycle
+
     ready: function() {
       var self = this;
       navigator.geolocation.getCurrentPosition(function(data) {
@@ -101,7 +116,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             };
           }
            self.position = data;
-          }); //end geocoder
+          });
         }.bind(this));
       }
     });
