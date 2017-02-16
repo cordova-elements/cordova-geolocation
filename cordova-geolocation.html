@@ -13,21 +13,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   `<cordova-geolocation>` is used to shows the markers in current position. To set the values of `latitude` and `longitude` we write
   javascript code. Instead of writing a javascript code we can use this element.
 
-  Example:
+Example:
+
     <cordova-geolocation id="cordovaGeolocation">
     </cordova-geolocation>
 
-  Example:
+Example:
 
-  To set the position value in template
+    To set the position value in template
 
-  <script>
-    document.getElementById('cordovaGeolocation').addEventListener('setCurrentPosition', function() {
-      document.getElementById('cordova-geolocation-map').items = document.getElementById('cordovaGeolocation').position;
-    })
-  </script>
-@demo demo/index.html
-@hero hero.svg
+     <script>
+      document.getElementById('cordovaGeolocation').addEventListener('setCurrentPosition', function() {
+        document.getElementById('cordova-geolocation-map').items = document.getElementById('cordovaGeolocation').position;
+      })
+     </script>
+
+ @demo demo/index.html
+ @hero hero.svg
 -->
 
 <dom-module id="cordova-geolocation">
