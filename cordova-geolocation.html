@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-apis/google-js-api.html">
 <!--
   `<cordova-geolocation>` is used to shows the markers in current position. To set the values of `latitude` and `longitude` we write
   javascript code. Instead of writing a javascript code we can use this element.
@@ -35,6 +36,7 @@ Example:
 <dom-module id="cordova-geolocation">
   <template>
       <content></content>
+      <google-js-api id="googleApi"></google-js-api>
   </template>
 
   <script>
@@ -88,39 +90,42 @@ Example:
 
     ready: function() {
       var self = this;
-      navigator.geolocation.getCurrentPosition(function(data) {
-        var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
-        geocoder = new google.maps.Geocoder();
-        geocoder.geocode({'latLng': myLatlng}, function(results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
-            data.coords.address = results[0].formatted_address;
-            data.coords.locationAddresses = results;
-            for (var location = 0; location < results[0].address_components.length; location++) {
-              var component = results[0].address_components[location];
-              switch(component.types[0])
-              {
-                case 'locality':
-                data.coords.city = component.long_name;
-                break;
-                case 'political':
-                data.coords.area = component.long_name;
-                break;
-                case 'administrative_area_level_1':
-                data.coords.state = component.long_name;
-                break;
-                case 'country':
-                data.coords.country = component.long_name;
-                break;
-                case 'postal_code':
-                data.coords.pincode = component.long_name;
-                break;
-              }
-            };
-          }
-           self.position = data;
-          });
-        }.bind(this));
-      }
+      self.$.googleApi.addEventListener("js-api-load", function(){
+        navigator.geolocation.getCurrentPosition(function(data) {
+          var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
+          geocoder = new google.maps.Geocoder();
+          geocoder.geocode({'latLng': myLatlng}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+              data.coords.address = results[0].formatted_address;
+              data.coords.locationAddresses = results;
+              for (var location = 0; location < results[0].address_components.length; location++) {
+                var component = results[0].address_components[location];
+                switch(component.types[0])
+                {
+                  case 'locality':
+                  data.coords.city = component.long_name;
+                  break;
+                  case 'political':
+                  data.coords.area = component.long_name;
+                  break;
+                  case 'administrative_area_level_1':
+                  data.coords.state = component.long_name;
+                  break;
+                  case 'country':
+                  data.coords.country = component.long_name;
+                  break;
+                  case 'postal_code':
+                  data.coords.pincode = component.long_name;
+                  break;
+                }
+              };
+            }
+             self.position = data;
+            });
+          }.bind(this));
+      })
+    }
+
     });
   </script>
 </dom-module>
