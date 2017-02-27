@@ -91,8 +91,7 @@ Example:
     ready: function() {
       var self = this;
       self.$.googleApi.addEventListener("js-api-load", function(){
-        navigator.geolocation.getCurrentPosition(onSuccess, options, onError);
-        var options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
         function onSuccess(data) {
           var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
           geocoder = new google.maps.Geocoder();
@@ -127,6 +126,7 @@ Example:
         }
         function onError(error) {
           if(error.code == 1){
+            console.log("To continue, let your device turn on loaction using Google's location service")
             alert("To continue, let your device turn on loaction using Google's location service");
           } else{
             alert('GPS signals are weak or GPS has been switched off')
