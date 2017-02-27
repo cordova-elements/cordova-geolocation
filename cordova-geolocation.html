@@ -91,7 +91,8 @@ Example:
     ready: function() {
       var self = this;
       self.$.googleApi.addEventListener("js-api-load", function(){
-        navigator.geolocation.getCurrentPosition(function(data) {
+        navigator.geolocation.getCurrentPosition(onSuccess, onError);
+        function onSuccess(data) {
           var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
           geocoder = new google.maps.Geocoder();
           geocoder.geocode({'latLng': myLatlng}, function(results, status) {
@@ -122,10 +123,16 @@ Example:
             }
              self.position = data;
             });
-          }.bind(this));
+        }
+        function onError(error) {
+          if(error.code == 1){
+            alert('To continue, let your device turn on loaction using Googles's location service);
+          } else{
+            alert('GPS signals are weak or GPS has been switched off')
+          }
+        }
       })
     }
-
-    });
+  });
   </script>
 </dom-module>
