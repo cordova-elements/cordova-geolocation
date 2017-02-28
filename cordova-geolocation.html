@@ -9,6 +9,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../paper-dialog/paper-dialog.html">
 <!--
   `<cordova-geolocation>` is used to shows the markers in current position. To set the values of `latitude` and `longitude` we write
   javascript code. Instead of writing a javascript code we can use this element.
@@ -35,6 +37,12 @@ Example:
 <dom-module id="cordova-geolocation">
   <template>
       <content></content>
+      <paper-dialog id="geolocationErrorDialog" modal>
+        <h3> Please check the location setting of your phone</h3>
+        <div>
+          <paper-button noink id="okButton" name="ok button" onclick="geolocationErrorDialog.close()"> OK </paper-button>
+        </div>
+      </paper-dialog>
   </template>
 
   <script>
@@ -92,8 +100,7 @@ Example:
     */
     getCurrentPosition: function(){
       var self = this;
-      //self.$.googleApi.addEventListener("js-api-load", function(){
-        navigator.geolocation.getCurrentPosition(function(data) {
+      function geoSuccess(data) {
           var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
           geocoder = new google.maps.Geocoder();
           geocoder.geocode({'latLng': myLatlng}, function(results, status) {
@@ -122,14 +129,26 @@ Example:
                 }
               };
             }
-             self.position = data;
-            });
-          }.bind(this));
-      //})
+            self.position = data;
+          });
+      }
+      function geofailure(error){
+        if(error.code){
+          document.getElementById('okButton').addEventListener('click', function(){
+            cordova.plugins.diagnostic.switchToLocationSettings();
+          })
+          document.getElementById('geolocationErrorDialog').open();
+        }
+      }
+      var options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
+      navigator.geolocation.getCurrentPosition(geoSuccess, geofailure, options);
     },
 
     ready: function() {
-      this.getCurrentPosition();
+      var self = this;
+      setTimeout(function(){
+        self.getCurrentPosition();
+      }, 3000);
     }
 
     });
