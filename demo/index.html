@@ -17,9 +17,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <link rel="import" href="../cordova-geolocation.html">
     <link rel="import" href="../../google-map/google-map.html">
     <link rel="import" href="../../google-map/google-map-marker.html" />
+    <link rel="import" href="../../paper-button/paper-button.html" />
     <style>
       google-map {
-        height: 600px;
+        height: 80vh;
         width: 100%;
       }
     </style>
@@ -34,10 +35,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </google-map>
       </template>
     </cordova-geolocation>
+    <paper-button id="demoButton" raised>Get Position</paper-button>
     <script>
-      document.getElementById('cordovaGeolocation').addEventListener('setCurrentPosition', function() {
-        document.getElementById('cordova-geolocation-map').items = document.getElementById('cordovaGeolocation').position;
-      })
+      document.getElementById('demoButton').addEventListener('click', function(){
+          document.getElementById('cordovaGeolocation').getCurrentPosition();
+          document.getElementById('cordova-geolocation-map').items = document.getElementById('cordovaGeolocation').position;
+      });
     </script>
   </body>
 </html>
