@@ -163,19 +163,21 @@ Example:
       var options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
       navigator.geolocation.getCurrentPosition(geoSuccess, geofailure, options);
     },
-
     ready: function() {
       var self = this;
       setInterval(function(){
-        console.log("work properly")
         cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
-          self.isgps = true;
-          console.log("GPS location is " + (enabled ? "enabled" : "disabled"));
+          if(enabled == 'true'){
+            self.isgps = true;
+            console.log("GPS location on is  ",enabled);
+          }else{
+            self.isgps = false;
+            console.log("GPS location off is " ,enabled);
+          }
         }, function(error){
           self.isgps = false;
           console.error("The following error occurred: "+error);
         });
-        console.log("work properly")
       }, 5000);
       // setTimeout(function(){
       //   self.getCurrentPosition();
