@@ -166,7 +166,7 @@ Example:
       var self = this;
       setInterval(function(){
         cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
-          if(enabled == 'true'){
+          if(enabled){
             self.isGpsOn = true;
             console.log("GPS location on is  ",enabled);
           }else{
