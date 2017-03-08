@@ -71,7 +71,7 @@ Example:
        * Shows the address in detail like BLock No , Street Address, Area, Pincode.
        */
       address: {
-        type: 'string',
+        type: String,
         value: '',
         notify: true,
         reflectToAttribute: true
@@ -80,20 +80,18 @@ Example:
       /**
        *  show GPS endabled or desabled.
        */
-      isgps:{
-        type: 'boolean',
-        value: 'false',
-        default: false,
-        //notify: true,
-        observer: '_getgps',
-        reflectToAttribute: true
-
+      isGpsOn:{
+        type: Boolean,
+        value: false,
+        notify: true,
+        observer: '_gpsChanged',
       },
       /**
        * Positon is used to set the values of latitude and longitude.
        */
       position: {
         type: Object,
+        notify: true,
         observer: '_currentlocation',
       },
     },
@@ -101,7 +99,8 @@ Example:
     /**
      *This observer fires when gps is on
      */
-    _getgps: function(){
+    _gpsChanged: function(){
+      console.log('function is working fine')
       this.getCurrentPosition()
     },
 
@@ -168,20 +167,17 @@ Example:
       setInterval(function(){
         cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
           if(enabled == 'true'){
-            self.isgps = true;
+            self.isGpsOn = true;
             console.log("GPS location on is  ",enabled);
           }else{
-            self.isgps = false;
+            self.isGpsOn = false;
             console.log("GPS location off is " ,enabled);
           }
         }, function(error){
-          self.isgps = false;
+          self.isGpsOn = false;
           console.error("The following error occurred: "+error);
         });
       }, 5000);
-      // setTimeout(function(){
-      //   self.getCurrentPosition();
-      // }, 3000);
     }
 
     });
