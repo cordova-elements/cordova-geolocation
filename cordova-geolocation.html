@@ -36,11 +36,33 @@ Example:
 
 <dom-module id="cordova-geolocation">
   <template>
+    <style>
+      .dailogposition {
+          top: 28vh !important;
+          border-radius: 5px;
+      }
+      .button-color{
+        height: 43px;
+        box-shadow: 1px 2px 3px #888888;
+        background-color: #a11f2b;
+        color: white;
+      }
+      .button-align{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      h3.heading{
+        font-weight: lighter;
+        font-family: "open sans";
+        font-size: 16px;
+      }
+    </style>
       <content></content>
-      <paper-dialog id="geolocationErrorDialog" fit-into modal>
-        <h3> Please check the location setting of your phone</h3>
-        <div>
-          <paper-button noink id="okButton" name="ok button" onclick="geolocationErrorDialog.close()"> OK </paper-button>
+      <paper-dialog id="geolocationErrorDialog" fit-into modal class="dailogposition">
+        <h3 class="heading"> Please check the location setting of your phone</h3>
+        <div class="button-align">
+          <paper-button noink id="okButton" name="ok button" onclick="geolocationErrorDialog.close()" class="button-color"> OK </paper-button>
         </div>
       </paper-dialog>
   </template>
