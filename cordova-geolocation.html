@@ -58,91 +58,103 @@ Example:
         font-size: 16px;
       }
     </style>
-      <content></content>
-      <paper-dialog id="geolocationErrorDialog" fit-into modal class="dailogposition">
-        <h3 class="heading"> Please check the location setting of your phone</h3>
-        <div class="button-align">
-          <paper-button noink id="okButton" name="ok button" onclick="geolocationErrorDialog.close()" class="button-color"> OK </paper-button>
-        </div>
-      </paper-dialog>
+    <content></content>
+    <paper-dialog id="geolocationErrorDialog" fit-into modal class="dailogposition">
+      <h3 class="heading"> Please check the location setting of your phone</h3>
+      <div class="button-align">
+        <paper-button noink id="okButton" name="ok button" onclick="geolocationErrorDialog.close()" class="button-color"> OK </paper-button>
+      </div>
+    </paper-dialog>
+    <paper-dialog id="geolocationNetslowDialog" fit-into modal class="dailogposition">
+      <h3 class="heading"> Error in connection. Please check your Net connection</h3>
+      <div class="button-align">
+        <paper-button noink id="netSlowOkButton" name="ok button" onclick="geolocationNetslowDialog.close()" class="button-color"> OK </paper-button>
+      </div>
+    </paper-dialog>
   </template>
 
   <script>
-  Polymer({
-    is: 'cordova-geolocation',
-    properties: {
-      /**
-       *  Latitude of current location.
-       */
-      latitude: {
-        type: Number,
-        value: '',
-        notify: true,
-        reflectToAttribute: true
-      },
-      /**
-       * Longitude of current location.
-       */
-      longitude: {
-        type: Number,
-        value: '',
-        notify: true,
-        reflectToAttribute: true
-      },
-      /**
-       * Shows the address in detail like BLock No , Street Address, Area, Pincode.
-       */
-      address: {
-        type: String,
-        value: '',
-        notify: true,
-        reflectToAttribute: true
+    Polymer({
+      is: 'cordova-geolocation',
+      properties: {
+        /**
+         *  Latitude of current location.
+         */
+        latitude: {
+          type: Number,
+          value: '',
+          notify: true,
+          reflectToAttribute: true
+        },
+        /**
+         * Longitude of current location.
+         */
+        longitude: {
+          type: Number,
+          value: '',
+          notify: true,
+          reflectToAttribute: true
+        },
+        /**
+         * Shows the address in detail like BLock No , Street Address, Area, Pincode.
+         */
+        address: {
+          type: String,
+          value: '',
+          notify: true,
+          reflectToAttribute: true
+        },
+
+        /**
+         *  show GPS endabled or desabled.
+         */
+        isGpsOn:{
+          type: Boolean,
+          value: false,
+          notify: true,
+          observer: '_gpsChanged',
+        },
+        /**
+         * Positon is used to set the values of latitude and longitude.
+         */
+        position: {
+          type: Object,
+          notify: true,
+          observer: '_currentlocation',
+        },
       },
 
       /**
-       *  show GPS endabled or desabled.
+       *This observer fires when gps is on
        */
-      isGpsOn:{
-        type: Boolean,
-        value: false,
-        notify: true,
-        observer: '_gpsChanged',
+      _gpsChanged: function(){
+        console.log('function is working fine')
+        this.getCurrentPosition()
       },
+
+      // This observer fires when user change their position
+      _currentlocation: function(){
+        this.fire('setCurrentPosition','');
+        var position = this.position;
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
+        this.address = position.coords.address;
+      },
+
       /**
-       * Positon is used to set the values of latitude and longitude.
-       */
-      position: {
-        type: Object,
-        notify: true,
-        observer: '_currentlocation',
-      },
-    },
-
-    /**
-     *This observer fires when gps is on
-     */
-    _gpsChanged: function(){
-      console.log('function is working fine')
-      this.getCurrentPosition()
-    },
-
-    // This observer fires when user change their position
-    _currentlocation: function(){
-      this.fire('setCurrentPosition','');
-      var position = this.position;
-      this.latitude = position.coords.latitude;
-      this.longitude = position.coords.longitude;
-      this.address = position.coords.address;
-    },
-
-    /**
-    * This method gives you current location at any point.
-    * Initialise it to get the latitude, longitude, address property of element.
-    */
-    getCurrentPosition: function(){
-      var self = this;
-      function geoSuccess(data) {
-          var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
+      * This method gives you current location at any point.
+      * Initialise it to get the latitude, longitude, address property of element.
+      */
+      getCurrentPosition: function(){
+        var self = this;
+        function geoSuccess(data) {
+          try {
+            var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
+          }
+          catch(err){
+            document.getElementById('geolocationNetslowDialog').open();
+            console.log('function error occurreds:',err);
+          };
           geocoder = new google.maps.Geocoder();
           geocoder.geocode({'latLng': myLatlng}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
@@ -172,36 +184,38 @@ Example:
             }
             self.position = data;
           });
-      }
-      function geofailure(error){
-        if(error.code){
-          document.getElementById('okButton').addEventListener('click', function(){
-            cordova.plugins.diagnostic.switchToLocationSettings();
-          })
-          document.getElementById('geolocationErrorDialog').open();
         }
-      }
-      var options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
-      navigator.geolocation.getCurrentPosition(geoSuccess, geofailure, options);
-    },
-    ready: function() {
-      var self = this;
-      setInterval(function(){
-        cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
-          if(enabled){
-            self.isGpsOn = true;
-            console.log("GPS location on is  ",enabled);
-          }else{
-            self.isGpsOn = false;
-            console.log("GPS location off is " ,enabled);
+        function geofailure(error){
+          if(error.code){
+            document.getElementById('okButton').addEventListener('click', function(){
+              cordova.plugins.diagnostic.switchToLocationSettings();
+            })
+            document.getElementById('geolocationErrorDialog').open();
           }
-        }, function(error){
-          self.isGpsOn = false;
-          console.error("The following error occurred: "+error);
-        });
-      }, 5000);
-    }
-
+        }
+        var options = { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true };
+        navigator.geolocation.getCurrentPosition(geoSuccess, geofailure, options)
+      },
+      ready: function() {
+        var self = this;
+        self.$['netSlowOkButton'].addEventListener('click', function(){
+          self.getCurrentPosition(geoSuccess, geofailure, options);
+        })
+        setInterval(function(){
+          cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
+            if(enabled){
+              self.isGpsOn = true;
+              console.log("GPS location on is  ",enabled);
+            }else{
+              self.isGpsOn = false;
+              console.log("GPS location off is " ,enabled);
+            }
+          }, function(error){
+            self.isGpsOn = false;
+            console.error("The following error occurred: "+error);
+          });
+        }, 5000);
+      }
     });
   </script>
 </dom-module>
