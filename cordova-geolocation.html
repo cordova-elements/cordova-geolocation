@@ -152,7 +152,7 @@ Example:
             var myLatlng = new google.maps.LatLng(data.coords.latitude,data.coords.longitude);
           }
           catch(err){
-            document.getElementById('geolocationNetslowDialog').open();
+            self.$['geolocationNetslowDialog'].open();
             console.log('function error occurreds:',err);
           };
           geocoder = new google.maps.Geocoder();
@@ -199,7 +199,7 @@ Example:
       ready: function() {
         var self = this;
         self.$['netSlowOkButton'].addEventListener('click', function(){
-          self.getCurrentPosition(geoSuccess, geofailure, options);
+          self.getCurrentPosition(self.geoSuccess, self.geofailure, self.options);
         })
         setInterval(function(){
           cordova.plugins.diagnostic.isGpsLocationEnabled(function(enabled){
