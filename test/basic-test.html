@@ -39,32 +39,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           myEl = fixture('cordova-geolocation-fixture');
         });
 
-        test('defines the "author" property', function() {
-          assert.equal(myEl.author.name, 'Dimitri Glazkov');
-          assert.equal(myEl.author.image, 'http://addyosmani.com/blog/wp-content/uploads/2013/04/unicorn.jpg');
-        });
+        test('defines the "address" property', function() {
 
-        test('says hello', function() {
-          assert.equal(myEl.sayHello(), 'cordova-geolocation says, Hello World!');
-
-          var greetings = myEl.sayHello('greetings Earthlings');
-          assert.equal(greetings, 'cordova-geolocation says, greetings Earthlings');
-        });
-
-        test('fires lasers', function(done) {
-          myEl.addEventListener('cordova-geolocation-lasers', function(event) {
-            assert.equal(event.detail.sound, 'Pew pew!');
-            done();
+            myEl.setAttribute('address','Huaz khas');
+            assert.equal(myEl.address, 'Huaz khas');
           });
-          myEl.fireLasers();
-        });
 
-        test('distributed children', function() {
-          var els = myEl.getContentChildren();
-          assert.equal(els.length, 1, 'one distributed node');
-          assert.equal(els[0], myEl.querySelector('h2'), 'content distributed correctly');
-        });
+                  test('defines the "latitude" property', function() {
 
+                      myEl.setAttribute('latitude','28.549507');
+                      assert.equal(myEl.latitude, '28.549507');
+                    });
+                    test('defines the "Longitude" property', function() {
+
+                        myEl.setAttribute('longitude','77.203613');
+                        assert.equal(myEl.longitude, '77.203613');
+                      });
+                      test('defines the "position" property', function() {
+                        var pos = {
+                          coords : {
+                          'accuracy' : '41',
+                          'address' : 'D 269, Block D, Sarvodaya Enclave, New Delhi',
+                          'altitude' : 'null',
+                          'area' : 'Sarvodaya Enclave',
+                          'city' : 'New Delhi',
+                          'country' : 'India',
+                          'heading' : 'null',
+                          'latitude' : '28.5373542'}
+                        };
+
+
+                          myEl.setAttribute('position','pos');
+                          assert.equal(myEl.items.position, 'pos');
+                        });
       });
     </script>
 
